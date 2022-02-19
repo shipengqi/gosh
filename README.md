@@ -3,8 +3,9 @@
 A simple SSH client for Go.
 Migrated from [golib](github.com/shipengqi/golib/gosh).
 
-[![Release](https://img.shields.io/github/release/shipengqi/gosh.svg)](https://github.com/shipengqi/gosh/releases)
-[![License](https://img.shields.io/github/license/shipengqi/gosh)](https://github.com/shipengqi/gosh/blob/main/LICENSE)
+[![CI](https://github.com/shipengqi/gosh/actions/workflows/ci.yml/badge.svg)](https://github.com/shipengqi/gosh/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/release/shipengqi/gosh.svg)](https://github.com/shipengqi/gosh/releases)
+[![license](https://img.shields.io/github/license/shipengqi/gosh)](https://github.com/shipengqi/gosh/blob/main/LICENSE)
 
 ## Quick Start
 
