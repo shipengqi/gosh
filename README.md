@@ -1,7 +1,7 @@
 # gosh
 
 A simple SSH client for Go.
-Migrated from [golib](github.com/shipengqi/golib/gosh).
+Migrated from [golib](https://github.com/shipengqi/golib).
 
 [![CI](https://github.com/shipengqi/gosh/actions/workflows/ci.yml/badge.svg)](https://github.com/shipengqi/gosh/actions/workflows/ci.yml)
 [![release](https://img.shields.io/github/release/shipengqi/gosh.svg)](https://github.com/shipengqi/gosh/releases)
