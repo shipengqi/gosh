@@ -1,6 +1,6 @@
 # gosh
 
-A simple SSH client for Go.
+A simple SSH client for Go. Inspired by [melbahja/goph](https://github.com/melbahja/goph).
 Migrated from [golib](https://github.com/shipengqi/golib).
 
 [![CI](https://github.com/shipengqi/gosh/actions/workflows/ci.yml/badge.svg)](https://github.com/shipengqi/gosh/actions/workflows/ci.yml)
