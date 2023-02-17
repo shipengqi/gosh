@@ -1,7 +1,9 @@
 package gssh
 
 import (
+	"bufio"
 	"flag"
+	"io"
 	"os"
 	"testing"
 
@@ -91,9 +93,18 @@ func outPipeTest(t *testing.T, cli *Client) {
 	cmd, err := cli.Command("n=1;while [ $n -le 4 ];do echo $n;((n++));done")
 	assert.NoError(t, err)
 	var lines []string
-	err = cmd.OutputPipe(func(line []byte) error {
-		// t.Log(line)
-		lines = append(lines, string(line))
+	err = cmd.OutputPipe(func(reader io.Reader) error {
+		nreader := bufio.NewReader(reader)
+		for {
+			line, _, rerr := nreader.ReadLine()
+			if rerr != nil || io.EOF == rerr {
+				break
+			}
+			lines = append(lines, string(line))
+			if err != nil {
+				return err
+			}
+		}
 		return nil
 	})
 	assert.NoError(t, err)

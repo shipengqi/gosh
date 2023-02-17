@@ -1,7 +1,6 @@
 package gssh
 
 import (
-	"bufio"
 	"context"
 	"errors"
 	"io"
@@ -11,8 +10,6 @@ import (
 )
 
 var ErrNilSession = errors.New("could not start with nil session, use SetSession() to set a session")
-
-type LoggingFunc func(line []byte) error
 
 // Cmd represents an external command being prepared or run.
 //
@@ -78,8 +75,10 @@ func (c *Cmd) Output() ([]byte, error) {
 	})
 }
 
-// OutputPipe runs cmd on the remote host and prints its standard output by the given LoggingFunc.
-func (c *Cmd) OutputPipe(fn LoggingFunc) error {
+// OutputPipe runs cmd on the remote host.
+// The reader is a pipe that will be connected to the
+// remote command's standard output when the command starts.
+func (c *Cmd) OutputPipe(fn func(reader io.Reader) error) error {
 	if c.session == nil {
 		return ErrNilSession
 	}
@@ -93,17 +92,11 @@ func (c *Cmd) OutputPipe(fn LoggingFunc) error {
 	if err != nil {
 		return err
 	}
-	reader := bufio.NewReader(stdout)
-	for {
-		line, _, rerr := reader.ReadLine()
-		if rerr != nil || io.EOF == rerr {
-			break
-		}
-		err = fn(line)
-		if err != nil {
-			return err
-		}
+	err = fn(stdout)
+	if err != nil {
+		return err
 	}
+
 	return c.session.Wait()
 }
 
@@ -117,15 +110,6 @@ func (c *Cmd) Run() error {
 		return nil, c.session.Run(c.String())
 	})
 	return err
-}
-
-// Start runs the command on the remote host.
-func (c *Cmd) Start() error {
-	if c.session == nil {
-		return ErrNilSession
-	}
-	defer func() { _ = c.session.Close() }()
-	return c.session.Start(c.String())
 }
 
 // String returns a human-readable description of c.
@@ -142,6 +126,7 @@ func (c *Cmd) String() string {
 // Setenv sets session env vars.
 // env specifies the environment of the process.
 // Each entry is of the form "key=value", and will be ignored if it is not.
+// Note: the server must be configured to `AcceptEnv line`.
 func (c *Cmd) Setenv(env []string) (err error) {
 	if c.session == nil {
 		return ErrNilSession
