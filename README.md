@@ -75,6 +75,7 @@ func main() {
 ```
 
 ### Upload Local File to Remote:
+
 ```go
 _, _ = cli.NewSftp()
 err := cli.Upload("/path/to/local/file", "/path/to/remote/file")
@@ -87,8 +88,9 @@ err := cli.Download("/path/to/remote/file", "/path/to/local/file")
 ```
 
 ### Execute Bash Commands:
+
 ```go
-out, _ := client.CombinedOutput("echo \"Hello, world!\"")
+output, _ := client.CombinedOutput("echo \"Hello, world!\"")
 ```
 
 ### Setenv
