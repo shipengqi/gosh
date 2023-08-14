@@ -3,7 +3,7 @@
 A simple SSH client for Go. Inspired by [melbahja/goph](https://github.com/melbahja/goph).
 Migrated from [golib](https://github.com/shipengqi/golib).
 
-[![CI](https://github.com/shipengqi/gosh/actions/workflows/ci.yml/badge.svg)](https://github.com/shipengqi/gosh/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/shipengqi/gosh)](https://goreportcard.com/report/github.com/shipengqi/gosh)
 [![release](https://img.shields.io/github/release/shipengqi/gosh.svg)](https://github.com/shipengqi/gosh/releases)
 [![license](https://img.shields.io/github/license/shipengqi/gosh)](https://github.com/shipengqi/gosh/blob/main/LICENSE)
 
