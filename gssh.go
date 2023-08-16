@@ -74,6 +74,7 @@ func NewInsecure(opts *Options) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	//nolint:gosec
 	cli.WithHostKeyCallback(ssh.InsecureIgnoreHostKey())
 	return cli, nil
 }
