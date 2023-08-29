@@ -22,7 +22,7 @@ func Auth(opts *Options) (ssh.AuthMethod, error) {
 		}
 	}
 	if opts.Key != "" {
-		if auth, err = Key(opts.Key, opts.Passphrase); err == nil {
+		if auth, err = Key(opts.Key, opts.KeyPassphrase); err == nil {
 			return auth, nil
 		}
 	}
