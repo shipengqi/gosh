@@ -2,7 +2,6 @@ package gssh
 
 import (
 	"errors"
-	"io/ioutil"
 	"net"
 	"os"
 
@@ -22,7 +21,7 @@ func Auth(opts *Options) (ssh.AuthMethod, error) {
 		}
 	}
 	if opts.Key != "" {
-		if auth, err = Key(opts.Key, opts.Passphrase); err == nil {
+		if auth, err = Key(opts.Key, opts.KeyPassphrase); err == nil {
 			return auth, nil
 		}
 	}
@@ -66,7 +65,7 @@ func Key(sshkey string, passphrase string) (ssh.AuthMethod, error) {
 
 // GetSigner returns ssh.Signer from private key file.
 func GetSigner(sshkey, passphrase string) (signer ssh.Signer, err error) {
-	data, err := ioutil.ReadFile(sshkey)
+	data, err := os.ReadFile(sshkey)
 	if err != nil {
 		return
 	}

@@ -27,14 +27,14 @@ var (
 
 // Options for SSH Client.
 type Options struct {
-	Username   string
-	Password   string
-	Key        string
-	Passphrase string
-	Addr       string
-	Port       int
-	UseAgent   bool
-	Timeout    time.Duration
+	Username      string
+	Password      string
+	Key           string
+	KeyPassphrase string
+	Addr          string
+	Port          int
+	UseAgent      bool
+	Timeout       time.Duration
 }
 
 // NewOptions creates an Options with default parameters.
