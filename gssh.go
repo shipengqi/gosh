@@ -186,6 +186,18 @@ func (c *Client) SetSftpClient(client *sftp.Client) {
 	c.sftp = client
 }
 
+// SftpClient returns a new sftp client with default options.
+func (c *Client) SftpClient() (*sftp.Client, error) {
+	if c.sftp != nil {
+		return c.sftp, nil
+	}
+	ftp, err := c.NewSftp()
+	if err != nil {
+		return nil, err
+	}
+	return ftp, nil
+}
+
 // Upload equivalent to the command `scp <src> <host>:<dst>`.
 func (c *Client) Upload(src, dst string) error {
 	local, err := os.Open(src)
@@ -255,17 +267,6 @@ func (c *Client) dial() (*ssh.Client, error) {
 			HostKeyCallback: c.callback,
 		},
 	)
-}
-
-func (c *Client) SftpClient() (*sftp.Client, error) {
-	if c.sftp != nil {
-		return c.sftp, nil
-	}
-	ftp, err := c.NewSftp()
-	if err != nil {
-		return nil, err
-	}
-	return ftp, nil
 }
 
 func Ping(addr, user, password, key string) error {
