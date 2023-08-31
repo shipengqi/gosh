@@ -29,6 +29,7 @@ func TestGSSH(t *testing.T) {
 			assert.Contains(t, err.Error(), "ssh: unable to authenticate")
 		}
 	})
+
 }
 
 func TestGSSHInsecure(t *testing.T) {
@@ -36,6 +37,8 @@ func TestGSSHInsecure(t *testing.T) {
 	t.Run("TestCmdOutPipe", insecure(t, outPipeTest))
 	t.Run("TestSetEnv", insecure(t, envTest))
 	t.Run("TestClientCmd", insecure(t, cliCmdTest))
+	t.Run("TestUpload", insecure(t, uploadTest))
+	t.Run("TestDownload", insecure(t, downloadTest))
 }
 
 func insecure(t *testing.T, callback func(t *testing.T, cli *Client)) func(t *testing.T) {
@@ -70,6 +73,24 @@ func secure(t *testing.T, callback func(t *testing.T, cli *Client)) func(t *test
 		defer func() { _ = cli.Close() }()
 		callback(t, cli)
 	}
+}
+
+func uploadTest(t *testing.T, cli *Client) {
+	ftp, _ := cli.NewSftp()
+	_ = ftp.Remove("/tmp/upload.txt")
+	err := cli.Upload("./testdata/upload.txt", "/tmp/upload.txt")
+	assert.NoError(t, err)
+}
+
+func downloadTest(t *testing.T, cli *Client) {
+	err := cli.Download("/tmp/upload.txt", "./testdata/download.txt")
+	assert.NoError(t, err)
+	data, err := os.ReadFile("./testdata/download.txt")
+	assert.NoError(t, err)
+	assert.Equal(t, "uploaded", string(data))
+	_ = os.Remove("./testdata/download.txt")
+	ftp, _ := cli.NewSftp()
+	_ = ftp.Remove("/tmp/upload.txt")
 }
 
 func cliCmdTest(t *testing.T, cli *Client) {
