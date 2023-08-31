@@ -77,14 +77,12 @@ func main() {
 ### Upload Local File to Remote:
 
 ```go
-_, _ = cli.NewSftp()
-err := cli.Upload("/path/to/local/file", "/path/to/remote/file")
+err := client.Upload("/path/to/local/file", "/path/to/remote/file")
 ```
 
 ### Download Remote File to Local:
 ```go
-_, _ = cli.NewSftp()
-err := cli.Download("/path/to/remote/file", "/path/to/local/file")
+err := client.Download("/path/to/remote/file", "/path/to/local/file")
 ```
 
 ### Execute Bash Commands:
@@ -105,6 +103,10 @@ AcceptEnv EXAMPLE_ENV_NAME
 ### File System Operations Via SFTP:
 
 ```go
+// use default sftp client
+sftp, _ :cli.SftpClient()
+
+// Create a sftp with options
 sftp, _ := cli.NewSftp()
 file, _ := sftp.Create("/tmp/remote_file")
 
