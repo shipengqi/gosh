@@ -194,7 +194,7 @@ func (c *Client) Upload(src, dst string) error {
 	}
 	defer func() { _ = local.Close() }()
 
-	ftp, err := c.sftpClient()
+	ftp, err := c.SftpClient()
 	if err != nil {
 		return err
 	}
@@ -212,19 +212,19 @@ func (c *Client) Upload(src, dst string) error {
 
 // Download equivalent to the command `scp <host>:<src> <dst>`.
 func (c *Client) Download(src, dst string) error {
-	local, err := os.Create(src)
+	local, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
 	defer func() { _ = local.Close() }()
 
-	ftp, err := c.sftpClient()
+	ftp, err := c.SftpClient()
 	if err != nil {
 		return err
 	}
 	defer func() { _ = ftp.Close() }()
 
-	remote, err := ftp.Open(dst)
+	remote, err := ftp.Open(src)
 	if err != nil {
 		return err
 	}
@@ -257,7 +257,7 @@ func (c *Client) dial() (*ssh.Client, error) {
 	)
 }
 
-func (c *Client) sftpClient() (*sftp.Client, error) {
+func (c *Client) SftpClient() (*sftp.Client, error) {
 	if c.sftp != nil {
 		return c.sftp, nil
 	}
