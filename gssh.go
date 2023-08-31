@@ -49,6 +49,7 @@ func NewOptions() *Options {
 // Client SSH client.
 type Client struct {
 	*ssh.Client
+	sftp     *sftp.Client
 	opts     *Options
 	auth     ssh.AuthMethod
 	callback ssh.HostKeyCallback
@@ -180,52 +181,57 @@ func (c *Client) NewSftp(opts ...sftp.ClientOption) (*sftp.Client, error) {
 	return sftp.NewClient(c.Client, opts...)
 }
 
-// Upload equivalent to the command `scp <local file> <host>:<remote file>`.
-func (c *Client) Upload(lpath, rpath string) (err error) {
-	local, err := os.Open(lpath)
+// SetSftpClient set a new sftp client for Client.
+func (c *Client) SetSftpClient(client *sftp.Client) {
+	c.sftp = client
+}
+
+// Upload equivalent to the command `scp <src> <host>:<dst>`.
+func (c *Client) Upload(src, dst string) error {
+	local, err := os.Open(src)
 	if err != nil {
-		return
+		return err
 	}
 	defer func() { _ = local.Close() }()
 
-	ftp, err := c.NewSftp()
+	ftp, err := c.sftpClient()
 	if err != nil {
-		return
+		return err
 	}
 	defer func() { _ = ftp.Close() }()
 
-	remote, err := ftp.Create(rpath)
+	remote, err := ftp.Create(dst)
 	if err != nil {
-		return
+		return err
 	}
 	defer func() { _ = remote.Close() }()
 
 	_, err = io.Copy(remote, local)
-	return
+	return err
 }
 
-// Download equivalent to the command `scp <host>:<remote file> <local file>`.
-func (c *Client) Download(rpath, lpath string) (err error) {
-	local, err := os.Create(lpath)
+// Download equivalent to the command `scp <host>:<src> <dst>`.
+func (c *Client) Download(src, dst string) error {
+	local, err := os.Create(src)
 	if err != nil {
-		return
+		return err
 	}
 	defer func() { _ = local.Close() }()
 
-	ftp, err := c.NewSftp()
+	ftp, err := c.sftpClient()
 	if err != nil {
-		return
+		return err
 	}
 	defer func() { _ = ftp.Close() }()
 
-	remote, err := ftp.Open(rpath)
+	remote, err := ftp.Open(dst)
 	if err != nil {
-		return
+		return err
 	}
 	defer func() { _ = remote.Close() }()
 
 	if _, err = io.Copy(local, remote); err != nil {
-		return
+		return err
 	}
 
 	return local.Sync()
@@ -249,6 +255,17 @@ func (c *Client) dial() (*ssh.Client, error) {
 			HostKeyCallback: c.callback,
 		},
 	)
+}
+
+func (c *Client) sftpClient() (*sftp.Client, error) {
+	if c.sftp != nil {
+		return c.sftp, nil
+	}
+	ftp, err := c.NewSftp()
+	if err != nil {
+		return nil, err
+	}
+	return ftp, nil
 }
 
 func Ping(addr, user, password, key string) error {
