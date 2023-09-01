@@ -34,9 +34,9 @@ func TestGSSH(t *testing.T) {
 
 func TestGSSHInsecure(t *testing.T) {
 	t.Run("TestPassAuth", insecure(t, authTest))
-	// t.Run("TestCmdOutPipe", insecure(t, outPipeTest))
-	// t.Run("TestSetEnv", insecure(t, envTest))
-	// t.Run("TestClientCmd", insecure(t, cliCmdTest))
+	t.Run("TestCmdOutPipe", insecure(t, outPipeTest))
+	t.Run("TestSetEnv", insecure(t, envTest))
+	t.Run("TestClientCmd", insecure(t, cliCmdTest))
 	t.Run("TestUpload", insecure(t, uploadTest))
 	t.Run("TestReadFile", insecure(t, readFileTest))
 	t.Run("TestDownload", insecure(t, downloadTest))
