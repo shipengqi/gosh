@@ -249,6 +249,33 @@ func (c *Client) Download(src, dst string) error {
 	return local.Sync()
 }
 
+// ReadFile reads the file named by filename and returns the contents.
+func (c *Client) ReadFile(src string) ([]byte, error) {
+	ftp, err := c.SftpClient()
+	if err != nil {
+		return nil, err
+	}
+	f, err := ftp.Open(src)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = f.Close() }()
+
+	chunks := make([]byte, 0)
+	buf := make([]byte, 1024)
+	for {
+		at, err := f.Read(buf)
+		if err != nil && err != io.EOF {
+			return nil, err
+		}
+		if at == 0 {
+			break
+		}
+		chunks = append(chunks, buf[:at]...)
+	}
+	return chunks, nil
+}
+
 // Close client net connection.
 func (c *Client) Close() error {
 	if c.Client != nil {

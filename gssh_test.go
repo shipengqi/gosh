@@ -38,6 +38,7 @@ func TestGSSHInsecure(t *testing.T) {
 	t.Run("TestSetEnv", insecure(t, envTest))
 	t.Run("TestClientCmd", insecure(t, cliCmdTest))
 	t.Run("TestUpload", insecure(t, uploadTest))
+	t.Run("TestReadFile", insecure(t, readFileTest))
 	t.Run("TestDownload", insecure(t, downloadTest))
 }
 
@@ -80,6 +81,12 @@ func uploadTest(t *testing.T, cli *Client) {
 	_ = ftp.Remove("/tmp/upload.txt")
 	err := cli.Upload("./testdata/upload.txt", "/tmp/upload.txt")
 	assert.NoError(t, err)
+}
+
+func readFileTest(t *testing.T, cli *Client) {
+	data, err := cli.ReadFile("/tmp/upload.txt")
+	assert.NoError(t, err)
+	assert.Equal(t, "uploaded", string(data))
 }
 
 func downloadTest(t *testing.T, cli *Client) {
