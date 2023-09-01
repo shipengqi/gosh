@@ -261,7 +261,7 @@ func (c *Client) ReadFile(src string) ([]byte, error) {
 	return chunks, nil
 }
 
-// Close client ssh and SFTP connection.
+// Close client ssh connection.
 func (c *Client) Close() error {
 	if c.Client != nil {
 		return c.Client.Close()
