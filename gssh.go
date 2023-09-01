@@ -49,7 +49,7 @@ func NewOptions() *Options {
 // Client SSH client.
 type Client struct {
 	*ssh.Client
-	sftp     *sftp.Client
+
 	opts     *Options
 	auth     ssh.AuthMethod
 	callback ssh.HostKeyCallback
@@ -181,23 +181,6 @@ func (c *Client) NewSftp(opts ...sftp.ClientOption) (*sftp.Client, error) {
 	return sftp.NewClient(c.Client, opts...)
 }
 
-// SetSftpClient set a new sftp client for Client.
-func (c *Client) SetSftpClient(client *sftp.Client) {
-	c.sftp = client
-}
-
-// SftpClient returns a new sftp client with default options.
-func (c *Client) SftpClient() (*sftp.Client, error) {
-	if c.sftp != nil {
-		return c.sftp, nil
-	}
-	ftp, err := c.NewSftp()
-	if err != nil {
-		return nil, err
-	}
-	return ftp, nil
-}
-
 // Upload equivalent to the command `scp <src> <host>:<dst>`.
 func (c *Client) Upload(src, dst string) error {
 	local, err := os.Open(src)
@@ -206,7 +189,7 @@ func (c *Client) Upload(src, dst string) error {
 	}
 	defer func() { _ = local.Close() }()
 
-	ftp, err := c.SftpClient()
+	ftp, err := c.NewSftp()
 	if err != nil {
 		return err
 	}
@@ -230,7 +213,7 @@ func (c *Client) Download(src, dst string) error {
 	}
 	defer func() { _ = local.Close() }()
 
-	ftp, err := c.SftpClient()
+	ftp, err := c.NewSftp()
 	if err != nil {
 		return err
 	}
@@ -251,10 +234,12 @@ func (c *Client) Download(src, dst string) error {
 
 // ReadFile reads the file named by filename and returns the contents.
 func (c *Client) ReadFile(src string) ([]byte, error) {
-	ftp, err := c.SftpClient()
+	ftp, err := c.NewSftp()
 	if err != nil {
 		return nil, err
 	}
+	defer func() { _ = ftp.Close() }()
+
 	f, err := ftp.Open(src)
 	if err != nil {
 		return nil, err
@@ -276,7 +261,7 @@ func (c *Client) ReadFile(src string) ([]byte, error) {
 	return chunks, nil
 }
 
-// Close client net connection.
+// Close client ssh connection.
 func (c *Client) Close() error {
 	if c.Client != nil {
 		return c.Client.Close()
