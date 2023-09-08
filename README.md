@@ -85,6 +85,11 @@ err := client.Upload("/path/to/local/file", "/path/to/remote/file")
 err := client.Download("/path/to/remote/file", "/path/to/local/file")
 ```
 
+### ReadFile Read Remote File:
+```go
+data, err := client.ReadFile("/path/to/remote/file")
+```
+
 ### Execute Bash Commands:
 
 ```go
@@ -103,9 +108,6 @@ AcceptEnv EXAMPLE_ENV_NAME
 ### File System Operations Via SFTP:
 
 ```go
-// use default sftp client
-sftp, _ :cli.SftpClient()
-
 // Create a sftp with options
 sftp, _ := cli.NewSftp()
 file, _ := sftp.Create("/tmp/remote_file")
