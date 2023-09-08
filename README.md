@@ -81,11 +81,13 @@ err := client.Upload("/path/to/local/file", "/path/to/remote/file")
 ```
 
 ### Download Remote File to Local:
+
 ```go
 err := client.Download("/path/to/remote/file", "/path/to/local/file")
 ```
 
 ### ReadFile Read Remote File:
+
 ```go
 data, err := client.ReadFile("/path/to/remote/file")
 ```
@@ -123,12 +125,14 @@ You can find the docs at [go docs](https://pkg.go.dev/github.com/shipengqi/gosh)
 
 ## Test
 
-### Test With Password Auth
+Test with password:
+
 ```bash
 go test -v . -addr <host> -user <username> -pass <password>
 ```
 
-### Test With Private Key Auth
+Test with private key:
+
 ```bash
 go test -v . -addr <host> -ssh-key <private key>
 ```
