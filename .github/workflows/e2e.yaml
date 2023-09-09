@@ -20,12 +20,6 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: stable
-      - name: Start SSH
-        uses: Tofandel/ssh-server-action@v1.0.0
-        with:
-          hostname: test.com
-          user_name: testuser
-          user_password: testpass
       - run: CI=true go test -v -coverprofile=coverage.out ./...
       - name: Codecov
         uses: codecov/codecov-action@v3
