@@ -43,7 +43,7 @@ func TestGSSHInsecure(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	flag.StringVar(&addr, "addr", "127.0.10.10", "The host of ssh")
+	flag.StringVar(&addr, "addr", "test.com", "The host of ssh")
 	flag.StringVar(&user, "user", "testuser", "The username of client")
 	flag.StringVar(&passwd, "pass", "testpass", "The password of user")
 	flag.StringVar(&key, "ssh-key", "", "The location of private key")

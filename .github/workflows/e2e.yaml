@@ -20,19 +20,12 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: stable
-      - name: SSH Server Deploy
-        uses: kostya-ten/ssh-server-deploy@v4
+      - name: Start SSH
+        uses: Tofandel/ssh-server-action@v1.0.0
         with:
-          host: 127.0.10.10
-          port: 22
-          username: testuser
-          password: testpass
-          scp_source: README.md
-          scp_target: ~/
-          before_script: |
-            df -h
-          after_script: |
-            whoami
+          hostname: test.com
+          user_name: testuser
+          user_password: testpass
       - run: CI=true go test -v -coverprofile=coverage.out ./...
       - name: Codecov
         uses: codecov/codecov-action@v3
