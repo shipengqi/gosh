@@ -24,7 +24,7 @@ import (
 func main() {
 
 	// Creates an Options with default parameters.
-	opts := gssh.NewOptions()
+	opts := gosh.NewOptions()
 	// Start connection with private key
 	opts.Key = "your private key"
 	
@@ -36,7 +36,7 @@ func main() {
 	// opts.UseAgent = true
 	
 	// Creates a Client that does not verify the server keys
-	cli, err := gssh.NewInsecure(opts)
+	cli, err := gosh.NewInsecure(opts)
 	if err != nil {
 		log.Fatal(err)
 	}
