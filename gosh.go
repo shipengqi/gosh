@@ -1,5 +1,5 @@
-// Package gssh provides a simple SSH client for Go.
-package gssh
+// Package gosh provides a simple SSH client for Go.
+package gosh
 
 import (
 	"context"

@@ -1,4 +1,4 @@
-package gssh
+package gosh
 
 import (
 	"errors"
