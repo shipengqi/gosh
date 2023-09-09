@@ -24,7 +24,7 @@ func TestGSSH(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("Ping error", func(t *testing.T) {
-		err := Ping(addr, user, "error", key)
+		err := Ping(addr, user, "errorpass", key)
 		if err != nil {
 			assert.Contains(t, err.Error(), "ssh: unable to authenticate")
 		}
@@ -40,6 +40,18 @@ func TestGSSHInsecure(t *testing.T) {
 	t.Run("TestUpload", insecure(t, uploadTest))
 	t.Run("TestReadFile", insecure(t, readFileTest))
 	t.Run("TestDownload", insecure(t, downloadTest))
+}
+
+func TestMain(m *testing.M) {
+	flag.StringVar(&addr, "addr", "127.0.10.10", "The host of ssh")
+	flag.StringVar(&user, "user", "testuser", "The username of client")
+	flag.StringVar(&passwd, "pass", "testpass", "The password of user")
+	flag.StringVar(&key, "ssh-key", "", "The location of private key")
+
+	flag.Parse()
+	if addr != "" {
+		os.Exit(m.Run())
+	}
 }
 
 func insecure(t *testing.T, callback func(t *testing.T, cli *Client)) func(t *testing.T) {
@@ -148,16 +160,4 @@ func envTest(t *testing.T, cli *Client) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, "Hello, GSSH!\n", string(output))
-}
-
-func TestMain(m *testing.M) {
-	flag.StringVar(&addr, "addr", "", "The host of ssh")
-	flag.StringVar(&user, "user", "root", "The username of client")
-	flag.StringVar(&passwd, "pass", "", "The password of user")
-	flag.StringVar(&key, "ssh-key", "", "The location of private key")
-
-	flag.Parse()
-	if addr != "" {
-		os.Exit(m.Run())
-	}
 }

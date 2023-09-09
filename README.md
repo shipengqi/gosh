@@ -7,7 +7,7 @@ Migrated from [golib](https://github.com/shipengqi/golib).
 [![release](https://img.shields.io/github/release/shipengqi/gosh.svg)](https://github.com/shipengqi/gosh/releases)
 [![license](https://img.shields.io/github/license/shipengqi/gosh)](https://github.com/shipengqi/gosh/blob/main/LICENSE)
 
-## Quick Start
+## Getting Started
 
 Run a command via ssh:
 ```go

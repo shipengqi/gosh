@@ -1,0 +1,44 @@
+name: test
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version: stable
+      - name: SSH Server Deploy
+        uses: kostya-ten/ssh-server-deploy@v4
+        with:
+          host: 127.0.10.10
+          port: 22
+          username: testuser
+          password: testpass
+          scp_source: README.md
+          scp_target: ~/
+          before_script: |
+            df -h
+          after_script: |
+            whoami
+      - run: CI=true go test -v -coverprofile=coverage.out ./...
+      - name: Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unittests
+          fail_ci_if_error: true
+          files: coverage.out
+
