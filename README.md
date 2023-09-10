@@ -7,7 +7,7 @@ Migrated from [golib](https://github.com/shipengqi/golib).
 [![release](https://img.shields.io/github/release/shipengqi/gosh.svg)](https://github.com/shipengqi/gosh/releases)
 [![license](https://img.shields.io/github/license/shipengqi/gosh)](https://github.com/shipengqi/gosh/blob/main/LICENSE)
 
-## Quick Start
+## Getting Started
 
 Run a command via ssh:
 ```go
@@ -24,7 +24,7 @@ import (
 func main() {
 
 	// Creates an Options with default parameters.
-	opts := gssh.NewOptions()
+	opts := gosh.NewOptions()
 	// Start connection with private key
 	opts.Key = "your private key"
 	
@@ -36,7 +36,7 @@ func main() {
 	// opts.UseAgent = true
 	
 	// Creates a Client that does not verify the server keys
-	cli, err := gssh.NewInsecure(opts)
+	cli, err := gosh.NewInsecure(opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,8 +81,15 @@ err := client.Upload("/path/to/local/file", "/path/to/remote/file")
 ```
 
 ### Download Remote File to Local:
+
 ```go
 err := client.Download("/path/to/remote/file", "/path/to/local/file")
+```
+
+### ReadFile Read Remote File:
+
+```go
+data, err := client.ReadFile("/path/to/remote/file")
 ```
 
 ### Execute Bash Commands:
@@ -103,9 +110,6 @@ AcceptEnv EXAMPLE_ENV_NAME
 ### File System Operations Via SFTP:
 
 ```go
-// use default sftp client
-sftp, _ :cli.SftpClient()
-
 // Create a sftp with options
 sftp, _ := cli.NewSftp()
 file, _ := sftp.Create("/tmp/remote_file")
@@ -121,12 +125,14 @@ You can find the docs at [go docs](https://pkg.go.dev/github.com/shipengqi/gosh)
 
 ## Test
 
-### Test With Password Auth
+Test with password:
+
 ```bash
 go test -v . -addr <host> -user <username> -pass <password>
 ```
 
-### Test With Private Key Auth
+Test with private key:
+
 ```bash
 go test -v . -addr <host> -ssh-key <private key>
 ```

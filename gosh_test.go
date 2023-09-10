@@ -1,4 +1,4 @@
-package gssh
+package gosh_test
 
 import (
 	"bufio"
@@ -7,6 +7,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/shipengqi/gosh"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,11 +21,11 @@ var (
 func TestGSSH(t *testing.T) {
 	t.Run("TestPassAuth", secure(t, authTest))
 	t.Run("Ping", func(t *testing.T) {
-		err := Ping(addr, user, passwd, key)
+		err := gosh.Ping(addr, user, passwd, key)
 		assert.NoError(t, err)
 	})
 	t.Run("Ping error", func(t *testing.T) {
-		err := Ping(addr, user, "error", key)
+		err := gosh.Ping(addr, user, "error", key)
 		if err != nil {
 			assert.Contains(t, err.Error(), "ssh: unable to authenticate")
 		}
@@ -42,14 +43,14 @@ func TestGSSHInsecure(t *testing.T) {
 	t.Run("TestDownload", insecure(t, downloadTest))
 }
 
-func insecure(t *testing.T, callback func(t *testing.T, cli *Client)) func(t *testing.T) {
-	opts := NewOptions()
+func insecure(t *testing.T, callback func(t *testing.T, cli *gosh.Client)) func(t *testing.T) {
+	opts := gosh.NewOptions()
 	opts.Username = user
 	opts.Password = passwd
 	opts.Addr = addr
 	opts.Key = key
 
-	cli, err := NewInsecure(opts)
+	cli, err := gosh.NewInsecure(opts)
 	assert.NoError(t, err)
 	err = cli.Dial()
 	assert.NoError(t, err)
@@ -58,16 +59,16 @@ func insecure(t *testing.T, callback func(t *testing.T, cli *Client)) func(t *te
 	}
 }
 
-func secure(t *testing.T, callback func(t *testing.T, cli *Client)) func(t *testing.T) {
-	opts := NewOptions()
+func secure(t *testing.T, callback func(t *testing.T, cli *gosh.Client)) func(t *testing.T) {
+	opts := gosh.NewOptions()
 	opts.Username = user
 	opts.Password = passwd
 	opts.Addr = addr
 	opts.Key = key
 
-	cli, err := New(opts)
+	cli, err := gosh.New(opts)
 	assert.NoError(t, err)
-	cli.WithHostKeyCallback(AutoFixedHostKeyCallback)
+	cli.WithHostKeyCallback(gosh.AutoFixedHostKeyCallback)
 	err = cli.Dial()
 	assert.NoError(t, err)
 	return func(t *testing.T) {
@@ -76,20 +77,20 @@ func secure(t *testing.T, callback func(t *testing.T, cli *Client)) func(t *test
 	}
 }
 
-func uploadTest(t *testing.T, cli *Client) {
+func uploadTest(t *testing.T, cli *gosh.Client) {
 	ftp, _ := cli.NewSftp()
 	_ = ftp.Remove("/tmp/upload.txt")
 	err := cli.Upload("./testdata/upload.txt", "/tmp/upload.txt")
 	assert.NoError(t, err)
 }
 
-func readFileTest(t *testing.T, cli *Client) {
+func readFileTest(t *testing.T, cli *gosh.Client) {
 	data, err := cli.ReadFile("/tmp/upload.txt")
 	assert.NoError(t, err)
 	assert.Equal(t, "uploaded", string(data))
 }
 
-func downloadTest(t *testing.T, cli *Client) {
+func downloadTest(t *testing.T, cli *gosh.Client) {
 	err := cli.Download("/tmp/upload.txt", "./testdata/download.txt")
 	assert.NoError(t, err)
 	data, err := os.ReadFile("./testdata/download.txt")
@@ -100,14 +101,14 @@ func downloadTest(t *testing.T, cli *Client) {
 	_ = ftp.Remove("/tmp/upload.txt")
 }
 
-func cliCmdTest(t *testing.T, cli *Client) {
+func cliCmdTest(t *testing.T, cli *gosh.Client) {
 	output, err := cli.CombinedOutput("echo \"Hello, world!\"")
 	assert.NoError(t, err)
 
 	assert.Equal(t, "Hello, world!\n", string(output))
 }
 
-func authTest(t *testing.T, cli *Client) {
+func authTest(t *testing.T, cli *gosh.Client) {
 	cmd, err := cli.Command("echo", "Hello, world!")
 	assert.NoError(t, err)
 
@@ -117,7 +118,7 @@ func authTest(t *testing.T, cli *Client) {
 	assert.Equal(t, "Hello, world!\n", string(output))
 }
 
-func outPipeTest(t *testing.T, cli *Client) {
+func outPipeTest(t *testing.T, cli *gosh.Client) {
 	cmd, err := cli.Command("n=1;while [ $n -le 4 ];do echo $n;((n++));done")
 	assert.NoError(t, err)
 	var lines []string
@@ -139,7 +140,7 @@ func outPipeTest(t *testing.T, cli *Client) {
 	assert.Equal(t, []string{"1", "2", "3", "4"}, lines)
 }
 
-func envTest(t *testing.T, cli *Client) {
+func envTest(t *testing.T, cli *gosh.Client) {
 	cmd, err := cli.Command("echo", "Hello, $TEST_ENV_NAME!")
 	assert.NoError(t, err)
 	err = cmd.Setenv([]string{"TEST_ENV_NAME=GSSH"})
