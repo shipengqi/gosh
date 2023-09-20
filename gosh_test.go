@@ -21,11 +21,11 @@ var (
 func TestGSSH(t *testing.T) {
 	t.Run("TestPassAuth", secure(t, authTest))
 	t.Run("Ping", func(t *testing.T) {
-		err := gosh.Ping(addr, user, passwd, key)
+		err := gosh.Ping(addr, user, passwd, key, -1)
 		assert.NoError(t, err)
 	})
 	t.Run("Ping error", func(t *testing.T) {
-		err := gosh.Ping(addr, user, "error", key)
+		err := gosh.Ping(addr, user, "error", key, 22)
 		if err != nil {
 			assert.Contains(t, err.Error(), "ssh: unable to authenticate")
 		}

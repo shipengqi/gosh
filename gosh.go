@@ -281,13 +281,16 @@ func (c *Client) dial() (*ssh.Client, error) {
 	)
 }
 
-func Ping(addr, user, password, key string) error {
+func Ping(addr, user, password, key string, port int) error {
+	if port < 1 {
+		port = DefaultPort
+	}
 	cli, err := NewInsecure(&Options{
 		Username: user,
 		Password: password,
 		Key:      key,
 		Addr:     addr,
-		Port:     DefaultPort,
+		Port:     port,
 	})
 	if err != nil {
 		return err
