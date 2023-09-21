@@ -91,6 +91,9 @@ func New(opts *Options) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	if opts.Port < 1 {
+		opts.Port = DefaultPort
+	}
 
 	c := &Client{
 		opts: opts,
@@ -281,17 +284,8 @@ func (c *Client) dial() (*ssh.Client, error) {
 	)
 }
 
-func Ping(addr, user, password, key string, port int) error {
-	if port < 1 {
-		port = DefaultPort
-	}
-	cli, err := NewInsecure(&Options{
-		Username: user,
-		Password: password,
-		Key:      key,
-		Addr:     addr,
-		Port:     port,
-	})
+func Ping(opts *Options) error {
+	cli, err := NewInsecure(opts)
 	if err != nil {
 		return err
 	}
