@@ -98,7 +98,7 @@ func New(opts *Options) (*Client, error) {
 	c := &Client{
 		opts: opts,
 		auth: auth,
-		callback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
+		callback: func(_ string, _ net.Addr, _ ssh.PublicKey) error {
 			return nil
 		},
 	}
