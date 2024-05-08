@@ -12,10 +12,10 @@ import (
 
 func AutoFixedHostKeyCallback(host string, remote net.Addr, key ssh.PublicKey) error {
 	found, err := VerifyKnownHost("", host, remote, key)
-	if found && err != nil {
+	if err != nil {
 		return err
 	}
-	if found && err == nil {
+	if found {
 		return nil
 	}
 	// Add the new host to known hosts file.

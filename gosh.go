@@ -53,6 +53,7 @@ type Client struct {
 	opts     *Options
 	auth     ssh.AuthMethod
 	callback ssh.HostKeyCallback
+	bannercb ssh.BannerCallback
 }
 
 // NewDefault creates a Client with DefaultHostKeyCallback, the host public key must be in known hosts.
@@ -109,6 +110,12 @@ func New(opts *Options) (*Client, error) {
 // WithHostKeyCallback sets ssh.HostKeyCallback of Client.
 func (c *Client) WithHostKeyCallback(callback ssh.HostKeyCallback) *Client {
 	c.callback = callback
+	return c
+}
+
+// WithBannerCallback sets ssh.BannerCallback of Client.
+func (c *Client) WithBannerCallback(callback ssh.BannerCallback) *Client {
+	c.bannercb = callback
 	return c
 }
 
@@ -280,6 +287,7 @@ func (c *Client) dial() (*ssh.Client, error) {
 			Auth:            []ssh.AuthMethod{c.auth},
 			Timeout:         c.opts.Timeout,
 			HostKeyCallback: c.callback,
+			BannerCallback:  c.bannercb,
 		},
 	)
 }
